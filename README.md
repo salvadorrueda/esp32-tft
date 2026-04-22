@@ -22,24 +22,30 @@ Idéntico para los dos sketches:
 | SDA   | GPIO 23 (MOSI)   |
 | BL    | 3V3              |
 
-## Librerías necesarias (Arduino Library Manager)
+## Compilar y flashear
 
-- Adafruit GFX Library
-- Adafruit ST7735 and ST7789 Library
-- ArduinoJson (≥ 6.21) — solo para `mikrotik_dashboard`
-
-Con `arduino-cli`:
+Hay un script `flash.sh` que usa `arduino-cli` para instalar dependencias,
+compilar y flashear cualquiera de los dos sketches. Auto-detecta el puerto
+serie (`/dev/ttyUSB*` o `/dev/ttyACM*`).
 
 ```bash
+./flash.sh --install                 # primera vez: core ESP-32 + librerías
+./flash.sh                           # compila y flashea mikrotik_dashboard
+./flash.sh tft_test                  # flashea el sketch de prueba
+./flash.sh --monitor                 # tras flashear, abre el monitor serie
+./flash.sh --compile                 # solo compila (sin conectar la placa)
+PORT=/dev/ttyACM0 ./flash.sh         # fuerza puerto
+FQBN=esp32:esp32:esp32s3 ./flash.sh  # fuerza placa
+```
+
+Requiere [`arduino-cli`](https://arduino.github.io/arduino-cli/) en el PATH.
+Si prefieres hacerlo a mano:
+
+```bash
+arduino-cli core install esp32:esp32
 arduino-cli lib install "Adafruit GFX Library" \
                         "Adafruit ST7735 and ST7789 Library" \
                         "ArduinoJson"
-arduino-cli core install esp32:esp32
-```
-
-## Compilar y flashear
-
-```bash
 arduino-cli compile --fqbn esp32:esp32:esp32 mikrotik_dashboard/
 arduino-cli upload  --fqbn esp32:esp32:esp32 -p /dev/ttyUSB0 mikrotik_dashboard/
 ```
