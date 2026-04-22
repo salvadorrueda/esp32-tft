@@ -1,0 +1,4 @@
+mikrotik_dashboard/secrets.h
+build/
+*.bin
+*.elf
