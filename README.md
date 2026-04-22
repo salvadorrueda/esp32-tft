@@ -60,7 +60,29 @@ Monitor serie a `115200` baudios.
 
 ### Preparar el Mikrotik hAP ax3
 
-Desde la terminal del router (RouterOS v7):
+Hay un script RouterOS listo en
+[`mikrotik_dashboard/setup-mikrotik.rsc`](mikrotik_dashboard/setup-mikrotik.rsc)
+que crea el grupo de solo lectura, el usuario dedicado y habilita el servicio
+`www`. Es idempotente: si ya existen, actualiza la configuración.
+
+1. Edita las variables al principio del fichero (al menos `dashPass` y,
+   opcionalmente, `dashClient` para restringir el acceso a la IP del ESP-32).
+2. Sube el fichero al router (Files en WinBox/WebFig, o por `scp`/`fetch`).
+3. Desde la terminal del router:
+
+   ```
+   /import file-name=setup-mikrotik.rsc
+   ```
+
+Comprobación desde un PC de la LAN:
+
+```bash
+curl -u dashboard:UN_PASSWORD_FUERTE \
+     http://192.168.88.1/rest/system/resource
+```
+
+Debe devolver un JSON con `cpu-load`, `free-memory`, etc. Si prefieres hacerlo
+a mano, los comandos equivalentes son:
 
 ```
 /user/group add name=readonly policy=read,api,rest-api,!write,!policy,!sensitive
@@ -69,15 +91,6 @@ Desde la terminal del router (RouterOS v7):
 # Opcional: restringir el servicio a la IP del ESP-32
 # /ip/service set www address=192.168.88.50/32
 ```
-
-Comprobación desde un PC:
-
-```bash
-curl -u dashboard:UN_PASSWORD_FUERTE \
-     http://192.168.88.1/rest/system/resource
-```
-
-Debe devolver un JSON con `cpu-load`, `free-memory`, etc.
 
 ## Funcionamiento
 
