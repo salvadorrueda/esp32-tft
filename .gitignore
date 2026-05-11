@@ -1,0 +1,5 @@
+secrets.h
+**/secrets.h
+build/
+*.bin
+*.elf
